@@ -4,7 +4,7 @@ import model
 import misc
 import time
 import datetime
-import urllib2
+from urllib import request as urllib2
 import logging
 
 logging.basicConfig(
@@ -533,8 +533,12 @@ def get_rent_perregion(city, district):
         i = 0
         log_progress("GetRentByRegionlist", district, page + 1, total_pages)
         data_source = []
-        for ultag in soup.findAll("ul", {"class": "house-lst"}):
+        for ultag in soup.findAll("div", {"class": "content__list--item"}):
+            logging.info("inside ultag")
+            logging.info(ultag)
+            break
             for name in ultag.find_all('li'):
+                logging.info("inside loop")
                 i = i + 1
                 info_dict = {}
                 try:
@@ -593,6 +597,7 @@ def get_rent_perregion(city, district):
                 # model.Rentinfo.insert(**info_dict).upsert().execute()
 
         with model.database.atomic():
+            logging.info("trying to insert {} records".format(len(data_source)))
             if data_source:
                 model.Rentinfo.insert_many(data_source).upsert().execute()
         time.sleep(1)
