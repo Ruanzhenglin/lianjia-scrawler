@@ -104,20 +104,20 @@ class Sellinfo(BaseModel):
 
 
 class Rentinfo(BaseModel):
-    houseID = CharField(primary_key=True)
+    house_id = CharField(primary_key=True)
     title = CharField()
     link = CharField()
-    region = CharField()
-    zone = CharField()
-    meters = CharField()
-    other = CharField()
-    subway = CharField()
-    decoration = CharField()
-    heating = CharField()
+    district = CharField()
+    town = CharField()
+    community = CharField()
+    orientation = CharField()
+    area = CharField()
+    house_type = CharField()
+    tags = CharField()
     price = CharField()
-    pricepre = CharField()
-    updatedate = DateTimeField(default=datetime.datetime.now)
-
+    update = CharField()
+    brand = CharField()
+    insert_time = DateTimeField(default=datetime.datetime.now)
 
 def database_init():
     database.connect()
