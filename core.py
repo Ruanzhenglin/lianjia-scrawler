@@ -533,74 +533,87 @@ def get_rent_perregion(city, district):
         i = 0
         log_progress("GetRentByRegionlist", district, page + 1, total_pages)
         data_source = []
-        for ultag in soup.findAll("div", {"class": "content__list--item"}):
-            logging.info("inside ultag")
-            logging.info(ultag)
-            break
-            for name in ultag.find_all('li'):
-                logging.info("inside loop")
-                i = i + 1
-                info_dict = {}
-                try:
-                    housetitle = name.find("div", {"class": "info-panel"})
-                    info_dict.update(
-                        {u'title': housetitle.h2.a.get_text().strip()})
-                    info_dict.update({u'link': housetitle.a.get("href")})
-                    houseID = name.get("data-housecode")
-                    info_dict.update({u'houseID': houseID})
+        for name in soup.findAll("div", {"class": "content__list--item"}):
+            i = i + 1
+            try:
+                info_dict = extract_rent_info(name)
+            except Exception as e:
+                print(e)
+                # print(e.__traceback__())
+                continue
 
-                    region = name.find("span", {"class": "region"})
-                    info_dict.update({u'region': region.get_text().strip()})
-
-                    zone = name.find("span", {"class": "zone"})
-                    info_dict.update({u'zone': zone.get_text().strip()})
-
-                    meters = name.find("span", {"class": "meters"})
-                    info_dict.update({u'meters': meters.get_text().strip()})
-
-                    other = name.find("div", {"class": "con"})
-                    info_dict.update({u'other': other.get_text().strip()})
-
-                    subway = name.find("span", {"class": "fang-subway-ex"})
-                    if subway == None:
-                        info_dict.update({u'subway': ""})
-                    else:
-                        info_dict.update(
-                            {u'subway': subway.span.get_text().strip()})
-
-                    decoration = name.find("span", {"class": "decoration-ex"})
-                    if decoration == None:
-                        info_dict.update({u'decoration': ""})
-                    else:
-                        info_dict.update(
-                            {u'decoration': decoration.span.get_text().strip()})
-
-                    heating = name.find("span", {"class": "heating-ex"})
-                    if decoration == None:
-                        info_dict.update({u'heating': ""})
-                    else:
-                        info_dict.update(
-                            {u'heating': heating.span.get_text().strip()})
-
-                    price = name.find("div", {"class": "price"})
-                    info_dict.update(
-                        {u'price': int(price.span.get_text().strip())})
-
-                    pricepre = name.find("div", {"class": "price-pre"})
-                    info_dict.update(
-                        {u'pricepre': pricepre.get_text().strip()})
-
-                except:
-                    continue
-                # Rentinfo insert into mysql
-                data_source.append(info_dict)
-                # model.Rentinfo.insert(**info_dict).upsert().execute()
+            # Rentinfo insert into mysql
+            data_source.append(info_dict)
+            # model.Rentinfo.insert(**info_dict).upsert().execute()
 
         with model.database.atomic():
             logging.info("trying to insert {} records".format(len(data_source)))
             if data_source:
                 model.Rentinfo.insert_many(data_source).upsert().execute()
         time.sleep(1)
+
+def extract_rent_info(name):
+    info_dict = dict()
+    # house_id
+    houseID = name.get("data-house_code")
+    info_dict.update({u'house_id': houseID})
+
+    # title
+    housetitle = name.find("p", {"class": "content__list--item--title twoline"})
+    info_dict.update(
+        {u'title': housetitle.a.get_text().strip()})
+    info_dict.update({u'link': housetitle.a.get("href")})
+
+    # description
+    des = name.find("p", {"class": "content__list--item--des"})
+
+    # <a>
+    atags = des.find_all("a")
+    district = atags[0]
+    info_dict.update({u'district': district.get_text().strip()})
+
+    town = atags[1]
+    info_dict.update({u'town': town.get_text().strip()})
+
+    community = atags[2]
+    info_dict.update({u'community': community.get_text().strip()})
+
+    # area / orientation / house_type
+    # <i>
+    ilist = des.find_all("i")
+    area = ilist[0]
+    info_dict.update({u'area': area.next_sibling.strip()})
+
+    orientation = ilist[1]
+    info_dict.update({u'orientation': orientation.next_sibling.strip()})
+
+    house_type = ilist[2]
+    info_dict.update({u'house_type': house_type.next_sibling.strip()})
+
+    # tags
+    tags = name.find("p", {"class": "content__list--item--bottom oneline"})
+
+    tags_text = "-".join([ti.get_text() for ti in tags.find_all("i")])
+
+    info_dict.update({u'tags': tags_text})
+
+    brand_p = name.find("p", {"class": "content__list--item--brand oneline"})
+    brand_span = brand_p.find_all("span")
+    brand = brand_span[0]
+    info_dict.update(
+        {u'brand': brand.get_text().strip()})
+
+    update = brand_span[1]
+    info_dict.update(
+        {u'update': update.get_text().strip()})
+
+    price = name.find("span", {"class": "content__list--item-price"})
+    info_dict.update(
+        {u'price': price.get_text().strip()})
+
+
+
+    return info_dict
 
 
 def get_communityinfo_by_url(url):
