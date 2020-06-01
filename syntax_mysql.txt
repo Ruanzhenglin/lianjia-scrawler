@@ -1,0 +1,3 @@
+grant all on oceanmint.* to 'omint' identified by 'oceanmint';
+
+replaced by CREATE USER 'omint'@'localhost' IDENTIFIED WITH mysql_native_password BY 'ocean-mint';

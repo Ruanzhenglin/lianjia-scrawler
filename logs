@@ -1,0 +1,7 @@
+2020-04-04 22:44:59,534 - INFO - Get Rent House Infomation in jingan
+2020-04-04 22:45:00,478 - INFO - Progress: GetRentByRegionlist jingan: current page 1 total pages 50
+2020-04-04 22:45:00,494 - INFO - trying to insert 30 records
+2020-04-04 22:45:00,610 - ERROR - (1364, "Field 'update' doesn't have a default value")
+2020-04-04 22:45:00,610 - INFO - Run time: 0:00:01.076011
+2020-04-04 22:45:00,610 - INFO - Get Community Infomation
+2020-04-04 22:45:04,431 - INFO - Progress: GetCommunityByRegionlist jingan: current page 1 total pages 30

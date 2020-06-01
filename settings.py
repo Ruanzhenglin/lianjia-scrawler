@@ -2,7 +2,10 @@ DBENGINE = 'mysql'  # ENGINE OPTIONS: mysql, sqlite3, postgresql
 DBNAME = 'ershoufang'
 DBUSER = 'root'
 DBPASSWORD = 'oceanmint'
-DBHOST = '192.168.1.7'
+DBHOST = '127.0.0.1'
 DBPORT = 3306
 CITY = 'sh'  # only one, shanghai=sh shenzhen=sh......
-REGIONLIST = [u'jingan']  # only pinyin support
+REGIONLIST = [
+	u'jingan', u'xuhui', u'huangpu', u'changning',
+	u'putuo', u'pudong', u'hongkou', u'yangpu', u'minhang'
+]  # only pinyin support

@@ -1,0 +1,13 @@
+id
+title
+link
+district
+town
+community
+orientation
+area
+house_type
+tags
+price
+update
+insert_time
