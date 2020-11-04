@@ -285,7 +285,7 @@ def get_community_perregion(city, regionname=u'xicheng'):
             url_page = baseUrl + u"xiaoqu/" + regionname + "/pg%d/" % page
             source_code = misc.get_source_code(url_page)
             soup = BeautifulSoup(source_code, 'lxml')
-
+            
         nameList = soup.findAll("li", {"class": "clear"})
         i = 0
         log_progress("GetCommunityByRegionlist",
@@ -559,7 +559,10 @@ def extract_rent_info(name):
     info_dict.update({u'house_id': houseID})
 
     # title
-    housetitle = name.find("p", {"class": "content__list--item--title twoline"})
+    # housetitle = name.find("p", {"class": "content__list--item--title twoline"})
+    
+    housetitle = name.find("p", {"class": "content__list--item--title"})
+    
     info_dict.update(
         {u'title': housetitle.a.get_text().strip()})
     info_dict.update({u'link': housetitle.a.get("href")})

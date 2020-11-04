@@ -17,6 +17,6 @@ if __name__ == "__main__":
     # core.GetHouseByRegionlist(city, regionlist)
     core.GetRentByRegionlist(city, regionlist)
     # Init,scrapy celllist and insert database; could run only 1st time
-    core.GetCommunityByRegionlist(city, regionlist)
-    communitylist = get_communitylist(city)  # Read celllist from database
-    core.GetSellByCommunitylist(city, communitylist)
+    #core.GetCommunityByRegionlist(city, regionlist)
+    #communitylist = get_communitylist(city)  # Read celllist from database
+    #core.GetSellByCommunitylist(city, communitylist)
